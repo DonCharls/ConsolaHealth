@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Animated Background - ConsolaHealth</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            width: 100%;
+            height: 100vh;
+            background: linear-gradient(135deg, #2B3A8C 0%, #1a2557 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .background-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .plus-sign {
+            position: absolute;
+            font-size: 3rem;
+            font-weight: 300;
+            color: rgba(255, 255, 255, 0.3);
+            pointer-events: none;
+            user-select: none;
+            opacity: 0.6;
+        }
+
+        .plus-sign:nth-child(1) {
+            animation: float 6s ease-in-out infinite;
+            top: 10%;
+            left: 10%;
+        }
+
+        .plus-sign:nth-child(2) {
+            animation: float 8s ease-in-out infinite reverse;
+            top: 20%;
+            right: 15%;
+            animation-delay: 1s;
+        }
+
+        .plus-sign:nth-child(3) {
+            animation: float 7s ease-in-out infinite;
+            top: 30%;
+            left: 20%;
+            animation-delay: 2s;
+        }
+
+        .plus-sign:nth-child(4) {
+            animation: float 9s ease-in-out infinite reverse;
+            top: 40%;
+            right: 10%;
+            animation-delay: 1.5s;
+        }
+
+        .plus-sign:nth-child(5) {
+            animation: float 6.5s ease-in-out infinite;
+            top: 50%;
+            left: 15%;
+            animation-delay: 3s;
+        }
+
+        .plus-sign:nth-child(6) {
+            animation: float 7.5s ease-in-out infinite reverse;
+            top: 25%;
+            right: 25%;
+            animation-delay: 0.5s;
+        }
+
+        .plus-sign:nth-child(7) {
+            animation: float 8.5s ease-in-out infinite;
+            top: 45%;
+            left: 35%;
+            animation-delay: 2.5s;
+        }
+
+        .plus-sign:nth-child(8) {
+            animation: float 6s ease-in-out infinite reverse;
+            top: 15%;
+            right: 30%;
+            animation-delay: 1s;
+        }
+
+        .plus-sign:nth-child(9) {
+            animation: float 7s ease-in-out infinite;
+            top: 60%;
+            left: 50%;
+            animation-delay: 3.5s;
+        }
+
+        .plus-sign:nth-child(10) {
+            animation: float 8s ease-in-out infinite reverse;
+            top: 35%;
+            right: 5%;
+            animation-delay: 2s;
+        }
+
+        .plus-sign:nth-child(11) {
+            animation: float 6.5s ease-in-out infinite;
+            top: 55%;
+            left: 60%;
+            animation-delay: 1.5s;
+        }
+
+        .plus-sign:nth-child(12) {
+            animation: float 7.5s ease-in-out infinite reverse;
+            top: 70%;
+            right: 40%;
+            animation-delay: 2.5s;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(0px) translateX(0px);
+            }
+            25% {
+                transform: translateY(-30px) translateX(20px);
+            }
+            50% {
+                transform: translateY(-50px) translateX(-20px);
+            }
+            75% {
+                transform: translateY(-30px) translateX(15px);
+            }
+            100% {
+                transform: translateY(0px) translateX(0px);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .plus-sign {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="background-container">
+        <div class="plus-sign">+</div>
+        <div class="plus-sign">+</div>
+        <div class="plus-sign">+</div>
+        <div class="plus-sign">+</div>
+        <div class="plus-sign">+</div>
+        <div class="plus-sign">+</div>
+        <div class="plus-sign">+</div>
+        <div class="plus-sign">+</div>
+        <div class="plus-sign">+</div>
+        <div class="plus-sign">+</div>
+        <div class="plus-sign">+</div>
+        <div class="plus-sign">+</div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,107 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Delete Student - ConsolaHealth{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-lg-6 offset-lg-3">
+            <!-- Header -->
+            <div class="mb-5">
+                <h1 class="display-5 mb-2" style="font-weight: 800; color: #C1272D;">
+                    <i class="bi bi-exclamation-triangle-fill"></i> Delete Student
+                </h1>
+                <p class="text-muted">This action cannot be undone</p>
+            </div>
+
+            <!-- Confirmation Card -->
+            <div class="card border-0 shadow-custom">
+                <div class="card-body p-5">
+                    <!-- Warning Icon and Message -->
+                    <div class="text-center mb-4">
+                        <div style="font-size: 4rem; color: #C1272D; margin-bottom: 1rem;">
+                            <i class="bi bi-exclamation-circle-fill"></i>
+                        </div>
+                        <h3 class="mb-3">Are you sure?</h3>
+                        <p class="text-muted mb-0">You are about to permanently delete the following student:</p>
+                    </div>
+
+                    <!-- Student Information -->
+                    <div class="alert alert-warning border-0" style="background: rgba(193, 39, 45, 0.08);">
+                        <div class="row align-items-center">
+                            <div class="col">
+                                <p class="mb-0"><strong>ID:</strong> {{ student.s_id }}</p>
+                                <p class="mb-0"><strong>Name:</strong> {{ student.last_name }}, {{ student.first_name }}</p>
+                                <p class="mb-0"><strong>Department:</strong> {{ student.get_department_display }}</p>
+                                <p class="mb-0"><strong>Year Level:</strong> {{ student.year_level }}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Warning Text -->
+                    <div class="alert alert-danger border-0 mb-4">
+                        <i class="bi bi-exclamation-circle"></i>
+                        <strong> Warning:</strong> All health records associated with this student will be deleted. This includes:</p>
+                        <ul class="mt-2 mb-0">
+                            <li>Health check-up records</li>
+                            <li>Health history data</li>
+                            <li>BMI and health metrics</li>
+                            <li>All related health information</li>
+                        </ul>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <form action="{% url 'delete_student' student.id %}" method="post" novalidate>
+                        {% csrf_token %}
+                        <div class="d-grid gap-3 d-sm-flex justify-content-sm-center">
+                            <a href="{% url 'home' %}" class="btn btn-secondary btn-lg">
+                                <i class="bi bi-x-circle"></i> Cancel
+                            </a>
+                            <button type="submit" class="btn btn-danger btn-lg">
+                                <i class="bi bi-trash"></i> Delete Permanently
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Quick Links -->
+            <div class="row mt-5">
+                <div class="col-12">
+                    <p class="text-center text-muted mb-3">Need to make changes instead?</p>
+                    <div class="text-center">
+                        <a href="{% url 'edit' student.id %}" class="btn btn-outline-primary me-2">
+                            <i class="bi bi-pencil"></i> Edit Student
+                        </a>
+                        <a href="{% url 'home' %}" class="btn btn-outline-secondary">
+                            <i class="bi bi-arrow-left"></i> Back to Students
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .alert {
+        border-radius: 12px;
+        border-left: 4px solid;
+    }
+
+    .alert-danger {
+        border-left-color: #C1272D;
+        background: rgba(193, 39, 45, 0.08);
+        color: #C1272D;
+    }
+
+    .alert-warning {
+        border-left-color: #F39C12;
+    }
+
+    .card {
+        margin-bottom: 30px;
+    }
+</style>
+{% endblock %}

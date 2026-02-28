@@ -1,0 +1,652 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Student Directory - ConsolaHealth{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <!-- Header Section -->
+    <div class="row mb-5">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h1 class="display-5 mb-2" style="font-weight: 800; color: #2B3A8C;">
+                        Student Directory
+                    </h1>
+                    <p class="text-muted mb-0">Manage and view all student records at Consolatrix College of Toledo City, Inc.</p>
+                </div>
+                <button type="button" class="btn btn-primary btn-lg" data-bs-toggle="modal" data-bs-target="#createModal">
+                    <i class="bi bi-plus-circle"></i> Add New Student
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Students Table Card -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card border-0 shadow-custom">
+                <div class="card-header" style="border-radius: 16px 16px 0 0;">
+                    <h5 class="card-title mb-0">
+                        Student Records
+                    </h5>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead>
+                                <tr>
+                                    <th width="10%"><i class="bi bi-hash"></i> ID</th>
+                                    <th width="20%">Student Name</th>
+                                    <th width="25%">Department</th>
+                                    <th width="10%">Year</th>
+                                    <th width="15%">Email</th>
+                                    <th width="20%" style="text-align: center;"></i> Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for student in students %}
+                                <tr>
+                                    <td>
+                                        <span class="badge bg-primary">{{ student.s_id }}</span>
+                                    </td>
+                                    <td>
+                                        <strong style="color: #2B3A8C;">{{ student.last_name }}, {{ student.first_name }}</strong>
+                                    </td>
+                                    <td>
+                                        <small class="text-muted">{{ student.get_department_display }}</small>
+                                    </td>
+                                    <td>
+                                        <small class="text-muted">Year {{ student.year_level }}</small>
+                                    </td>
+                                    <td>
+                                        {% if student.email %}
+                                            <a href="mailto:{{ student.email }}" style="color: #2B3A8C; text-decoration: none;">
+                                                <i class="bi bi-envelope"></i> {{ student.email }}
+                                            </a>
+                                        {% else %}
+                                            <span class="text-muted">—</span>
+                                        {% endif %}
+                                    </td>
+                                    <td style="text-align: center;">
+                                        <div class="btn-group" role="group">
+                                            <a href="{% url 'health:student_history' student.id %}" class="btn btn-sm btn-outline-primary" title="View Health Records">
+                                                <i class="bi bi-heart-pulse"></i> Health
+                                            </a>
+                                            <button type="button" class="btn btn-sm btn-outline-secondary" title="Edit student information" data-bs-toggle="modal" data-bs-target="#editModal" data-student-id="{{ student.id }}" data-first-name="{{ student.first_name }}" data-last-name="{{ student.last_name }}" data-email="{{ student.email }}" data-department="{{ student.department }}" data-year-level="{{ student.year_level }}" data-s-id="{{ student.s_id }}">
+                                                <i class="bi bi-pencil"></i> Edit
+                                            </button>
+                                            <button type="button" class="btn btn-sm btn-outline-danger" title="Delete student" data-bs-toggle="modal" data-bs-target="#deleteModal" data-student-id="{{ student.id }}" data-first-name="{{ student.first_name }}" data-last-name="{{ student.last_name }}" data-department="{{ student.get_department_display }}" data-year-level="{{ student.year_level }}" data-s-id="{{ student.s_id }}">
+                                                <i class="bi bi-trash"></i> Delete
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="6" class="text-center py-5">
+                                        <i class="bi bi-inbox" style="font-size: 2.5rem; color: #ccc;"></i>
+                                        <p class="text-muted mt-3 mb-3">No students found in the database.</p>
+                                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createModal">
+                                            <i class="bi bi-plus-circle"></i> Create Your First Student
+                                        </button>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Stats Section -->
+    <div class="row mt-5 mb-4">
+        <div class="col-md-6 col-lg-3 mb-4">
+            <div class="card border-0 shadow-custom" style="overflow: hidden;">
+                <div class="card-body p-0">
+                    <div class="row g-0">
+                        <div class="col-auto" style="background: linear-gradient(135deg, #2B3A8C 0%, #3d4fa8 100%); width: 70px; display: flex; align-items: center; justify-content: center;">
+                            <i class="bi bi-people text-white" style="font-size: 1.8rem;"></i>
+                        </div>
+                        <div class="col p-3">
+                            <p class="text-muted mb-1 small">Total Students</p>
+                            <h4 class="mb-0" style="color: #2B3A8C;">{{ students|length }}</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-lg-3 mb-4">
+            <div class="card border-0 shadow-custom" style="overflow: hidden;">
+                <div class="card-body p-0">
+                    <div class="row g-0">
+                        <div class="col-auto" style="background: linear-gradient(135deg, #27AE60 0%, #52c97f 100%); width: 70px; display: flex; align-items: center; justify-content: center;">
+                            <i class="bi bi-graph-up text-white" style="font-size: 1.8rem;"></i>
+                        </div>
+                        <div class="col p-3">
+                            <p class="text-muted mb-1 small">Active Records</p>
+                            <h4 class="mb-0" style="color: #27AE60;">{{ students|length }}</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-lg-3 mb-4">
+            <a href="{% url 'health:dashboard' %}" class="card border-0 shadow-custom text-decoration-none" style="overflow: hidden; cursor: pointer;">
+                <div class="card-body p-0">
+                    <div class="row g-0">
+                        <div class="col-auto" style="background: linear-gradient(135deg, #3498DB 0%, #5dade2 100%); width: 70px; display: flex; align-items: center; justify-content: center;">
+                            <i class="bi bi-bar-chart text-white" style="font-size: 1.8rem;"></i>
+                        </div>
+                        <div class="col p-3">
+                            <p class="text-muted mb-1 small">Health Dashboard</p>
+                            <h6 class="mb-0" style="color: #3498DB;">View Analytics</h6>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <div class="col-md-6 col-lg-3 mb-4">
+            <a href="{% url 'health:all_records' %}" class="card border-0 shadow-custom text-decoration-none" style="overflow: hidden; cursor: pointer;">
+                <div class="card-body p-0">
+                    <div class="row g-0">
+                        <div class="col-auto" style="background: linear-gradient(135deg, #9B59B6 0%, #af7ac5 100%); width: 70px; display: flex; align-items: center; justify-content: center;">
+                            <i class="bi bi-table text-white" style="font-size: 1.8rem;"></i>
+                        </div>
+                        <div class="col p-3">
+                            <p class="text-muted mb-1 small">All Health Records</p>
+                            <h6 class="mb-0" style="color: #9B59B6;">View Reports</h6>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+
+    <!-- Department & Year Level Statistics Section -->
+    <div class="row mt-5 mb-5">
+        <h5 class="mb-4" style="color: #2B3A8C; font-weight: 800;">
+            Student Distribution Statistics
+        </h5>
+        
+        <!-- Department Distribution Card -->
+        <div class="col-lg-6 mb-4">
+            <div class="card border-0 shadow-custom">
+                <div class="card-header" style="border-radius: 16px 16px 0 0;">
+                    <h5 class="card-title mb-0">
+                        Students by Department
+                    </h5>
+                </div>
+                <div class="card-body" style="padding: 1.5rem;">
+                    <div class="row align-items-center">
+                        <div class="col-md-6">
+                            <canvas id="departmentChart" height="50"></canvas>
+                        </div>
+                        <div class="col-md-6">
+                            <div style="padding-left: 1rem;">
+                                <h6 class="text-muted mb-3" style="font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px;">Distribution</h6>
+                                <div id="deptStats"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Year Level Distribution Card -->
+        <div class="col-lg-6 mb-4">
+            <div class="card border-0 shadow-custom">
+                <div class="card-header" style="border-radius: 16px 16px 0 0;">
+                    <h5 class="card-title mb-0">
+                        Students by Year Level
+                    </h5>
+                </div>
+                <div class="card-body" style="padding: 1.5rem;">
+                    <div class="row align-items-center">
+                        <div class="col-md-6">
+                            <canvas id="yearLevelChart" height="50"></canvas>
+                        </div>
+                        <div class="col-md-6">
+                            <div style="padding-left: 1rem;">
+                                <h6 class="text-muted mb-3" style="font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px;">Distribution</h6>
+                                <div id="yearStats"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Create Student Modal -->
+<div class="modal fade" id="createModal" tabindex="-1" aria-labelledby="createModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="createModalLabel">
+                    <i class="bi bi-person-plus-fill"></i> Add New Student
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="createForm" method="post" action="{% url 'create_student' %}" novalidate>
+                {% csrf_token %}
+                <div class="modal-body">
+                    <!-- Student ID Section -->
+                    <div class="mb-4">
+                        <label for="create_s_id" class="form-label">
+                            <i class="bi bi-hash"></i> Student ID
+                        </label>
+                        <input type="text" class="form-control" id="create_s_id" name="s_id" placeholder="e.g., 202401" required>
+                        <small class="text-muted">Enter a unique student ID</small>
+                    </div>
+
+                    <!-- Name Fields -->
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <label for="create_first_name" class="form-label">
+                                <i class="bi bi-person"></i> First Name
+                            </label>
+                            <input type="text" class="form-control" id="create_first_name" name="first_name" placeholder="Juan" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="create_last_name" class="form-label">
+                                <i class="bi bi-person"></i> Last Name
+                            </label>
+                            <input type="text" class="form-control" id="create_last_name" name="last_name" placeholder="Dela Cruz" required>
+                        </div>
+                    </div>
+
+                    <!-- Email Field -->
+                    <div class="mb-4">
+                        <label for="create_email" class="form-label">
+                            <i class="bi bi-envelope"></i> Email Address
+                        </label>
+                        <input type="email" class="form-control" id="create_email" name="email" placeholder="student@university.edu">
+                        <small class="text-muted">Optional contact email</small>
+                    </div>
+
+                    <!-- Department Field -->
+                    <div class="mb-4">
+                        <label for="create_department" class="form-label">
+                            <i class="bi bi-building"></i> Department
+                        </label>
+                        <select class="form-select" id="create_department" name="department" required>
+                            <option value="">-- Select Department --</option>
+                            <option value="BSIT">Bachelor of Science in Information Technology (BSIT)</option>
+                            <option value="BSED">Bachelor of Secondary Education (BSED)</option>
+                            <option value="BEED">Bachelor of Elementary Education (BEED)</option>
+                            <option value="BSHM">Bachelor of Science in Hospitality Management (BSHM)</option>
+                            <option value="BPEd">Bachelor of Physical Education (BPEd)</option>
+                            <option value="BSEntrep">Bachelor of Science in Entrepreneurship (BSEntrep)</option>
+                        </select>
+                    </div>
+
+                    <!-- Year Level Field -->
+                    <div class="mb-5">
+                        <label for="create_year_level" class="form-label">
+                            <i class="bi bi-mortarboard"></i> Year Level
+                        </label>
+                        <select class="form-select" id="create_year_level" name="year_level" required>
+                            <option value="">-- Select Year --</option>
+                            <option value="1">1st Year</option>
+                            <option value="2">2nd Year</option>
+                            <option value="3">3rd Year</option>
+                            <option value="4">4th Year</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        Cancel
+                    </button>
+                    <button type="submit" class="btn btn-primary">
+                        Create Student
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Student Modal -->
+<div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editModalLabel">
+                    <i class="bi bi-pencil-square"></i> Edit Student
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="editForm" method="post" novalidate>
+                {% csrf_token %}
+                <div class="modal-body">
+                    <!-- Student ID Section (Read-only) -->
+                    <div class="mb-4">
+                        <label for="edit_s_id" class="form-label">
+                            <i class="bi bi-hash"></i> Student ID
+                        </label>
+                        <input type="text" class="form-control" id="edit_s_id" disabled readonly>
+                        <small class="text-muted">Cannot be changed</small>
+                    </div>
+
+                    <!-- Name Fields -->
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <label for="edit_first_name" class="form-label">
+                                <i class="bi bi-person"></i> First Name
+                            </label>
+                            <input type="text" class="form-control" id="edit_first_name" name="first_name" placeholder="Juan" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="edit_last_name" class="form-label">
+                                <i class="bi bi-person"></i> Last Name
+                            </label>
+                            <input type="text" class="form-control" id="edit_last_name" name="last_name" placeholder="Dela Cruz" required>
+                        </div>
+                    </div>
+
+                    <!-- Email Field -->
+                    <div class="mb-4">
+                        <label for="edit_email" class="form-label">
+                            <i class="bi bi-envelope"></i> Email Address
+                        </label>
+                        <input type="email" class="form-control" id="edit_email" name="email" placeholder="student@university.edu">
+                        <small class="text-muted">Optional contact email</small>
+                    </div>
+
+                    <!-- Department Field -->
+                    <div class="mb-4">
+                        <label for="edit_department" class="form-label">
+                            <i class="bi bi-building"></i> Department
+                        </label>
+                        <select class="form-select" id="edit_department" name="department" required>
+                            <option value="BSIT">Bachelor of Science in Information Technology (BSIT)</option>
+                            <option value="BSED">Bachelor of Secondary Education (BSED)</option>
+                            <option value="BEED">Bachelor of Elementary Education (BEED)</option>
+                            <option value="BSHM">Bachelor of Science in Hospitality Management (BSHM)</option>
+                            <option value="BPEd">Bachelor of Physical Education (BPEd)</option>
+                            <option value="BSEntrep">Bachelor of Science in Entrepreneurship (BSEntrep)</option>
+                        </select>
+                    </div>
+
+                    <!-- Year Level Field -->
+                    <div class="mb-5">
+                        <label for="edit_year_level" class="form-label">
+                            <i class="bi bi-mortarboard"></i> Year Level
+                        </label>
+                        <select class="form-select" id="edit_year_level" name="year_level" required>
+                            <option value="1">1st Year</option>
+                            <option value="2">2nd Year</option>
+                            <option value="3">3rd Year</option>
+                            <option value="4">4th Year</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        Cancel
+                    </button>
+                    <button type="submit" class="btn btn-primary">
+                        Save Changes
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Student Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-danger bg-opacity-10">
+                <h5 class="modal-title text-danger" id="deleteModalLabel">
+                    <i class="bi bi-exclamation-triangle-fill"></i> Delete Student
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Warning Icon and Message -->
+                <div class="text-center mb-4">
+                    <div style="font-size: 3rem; color: #C1272D; margin-bottom: 1rem;">
+                        <i class="bi bi-exclamation-circle-fill"></i>
+                    </div>
+                    <h4 class="mb-3">Are you sure?</h4>
+                    <p class="text-muted mb-0">You are about to permanently delete the following student:</p>
+                </div>
+
+                <!-- Student Information -->
+                <div class="alert alert-warning border-0" style="background: rgba(193, 39, 45, 0.08);">
+                    <p class="mb-0"><strong>ID:</strong> <span id="delete_s_id"></span></p>
+                    <p class="mb-0"><strong>Name:</strong> <span id="delete_name"></span></p>
+                    <p class="mb-0"><strong>Department:</strong> <span id="delete_department"></span></p>
+                    <p class="mb-0"><strong>Year Level:</strong> <span id="delete_year_level"></span></p>
+                </div>
+
+                <!-- Warning Text -->
+                <div class="alert alert-danger border-0 mb-4">
+                    <i class="bi bi-exclamation-circle"></i>
+                    <strong> Warning:</strong> All health records associated with this student will be deleted. This includes:
+                    <ul class="mt-2 mb-0">
+                        <li>Health check-up records</li>
+                        <li>Health history data</li>
+                        <li>BMI and health metrics</li>
+                        <li>All related health information</li>
+                    </ul>
+                </div>
+            </div>
+            <form id="deleteForm" method="post" novalidate>
+                {% csrf_token %}
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        Cancel
+                    </button>
+                    <button type="submit" class="btn btn-danger">
+                        Delete Permanently
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<style>
+    th {
+        background: linear-gradient(135deg, #F5F5F5 0%, #FAFAFA 100%);
+        border: none;
+        font-weight: 700;
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    tbody tr:hover {
+        background-color: rgba(43, 58, 140, 0.04);
+    }
+
+    .btn-group .btn {
+        padding: 6px 12px;
+        font-size: 0.85rem;
+    }
+
+    .card:hover {
+        box-shadow: 0 8px 24px rgba(43, 58, 140, 0.15) !important;
+    }
+</style>
+
+<script>
+    // Edit Modal
+    const editModal = document.getElementById('editModal');
+    editModal.addEventListener('show.bs.modal', function(event) {
+        const button = event.relatedTarget;
+        const studentId = button.getAttribute('data-student-id');
+        const firstName = button.getAttribute('data-first-name');
+        const lastName = button.getAttribute('data-last-name');
+        const email = button.getAttribute('data-email');
+        const department = button.getAttribute('data-department');
+        const yearLevel = button.getAttribute('data-year-level');
+        const sId = button.getAttribute('data-s-id');
+
+        document.getElementById('edit_s_id').value = sId;
+        document.getElementById('edit_first_name').value = firstName;
+        document.getElementById('edit_last_name').value = lastName;
+        document.getElementById('edit_email').value = email;
+        document.getElementById('edit_department').value = department;
+        document.getElementById('edit_year_level').value = yearLevel;
+
+        const form = document.getElementById('editForm');
+        form.action = '{% url "edit_student" 0 %}'.replace('0', studentId);
+    });
+
+    // Delete Modal
+    const deleteModal = document.getElementById('deleteModal');
+    deleteModal.addEventListener('show.bs.modal', function(event) {
+        const button = event.relatedTarget;
+        const studentId = button.getAttribute('data-student-id');
+        const firstName = button.getAttribute('data-first-name');
+        const lastName = button.getAttribute('data-last-name');
+        const department = button.getAttribute('data-department');
+        const yearLevel = button.getAttribute('data-year-level');
+        const sId = button.getAttribute('data-s-id');
+
+        document.getElementById('delete_s_id').textContent = sId;
+        document.getElementById('delete_name').textContent = lastName + ', ' + firstName;
+        document.getElementById('delete_department').textContent = department;
+        document.getElementById('delete_year_level').textContent = yearLevel;
+
+        const form = document.getElementById('deleteForm');
+        form.action = '{% url "delete_student" 0 %}'.replace('0', studentId);
+    });
+</script>
+
+<!-- Chart.js Library -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.js"></script>
+
+<script>
+    // Chart Colors
+    const primaryColor = '#2B3A8C';
+    const successColor = '#27AE60';
+    const infoColor = '#3498DB';
+    const warningColor = '#F39C12';
+    const dangerColor = '#C1272D';
+    
+    const chartColors = [
+        primaryColor,
+        successColor,
+        infoColor,
+        warningColor,
+        dangerColor,
+        '#9B59B6'
+    ];
+
+    // Parse chart data
+    const deptLabels = JSON.parse('{{ dept_labels|escapejs }}');
+    const deptData = JSON.parse('{{ dept_data|escapejs }}');
+    const yearLabels = JSON.parse('{{ year_labels|escapejs }}');
+    const yearData = JSON.parse('{{ year_data|escapejs }}');
+
+    // Department Distribution Chart
+    const ctxDept = document.getElementById('departmentChart').getContext('2d');
+    new Chart(ctxDept, {
+        type: 'doughnut',
+        data: {
+            labels: deptLabels,
+            datasets: [{
+                data: deptData,
+                backgroundColor: chartColors,
+                borderColor: '#fff',
+                borderWidth: 2,
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: true,
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: {
+                        font: { size: 12, weight: 600 },
+                        padding: 15,
+                        usePointStyle: true
+                    }
+                }
+            }
+        }
+    });
+
+    // Year Level Distribution Chart
+    const ctxYear = document.getElementById('yearLevelChart').getContext('2d');
+    new Chart(ctxYear, {
+        type: 'doughnut',
+        data: {
+            labels: yearLabels,
+            datasets: [{
+                data: yearData,
+                backgroundColor: [primaryColor, successColor, infoColor, warningColor],
+                borderColor: '#fff',
+                borderWidth: 2,
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: true,
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: {
+                        font: { size: 12, weight: 600 },
+                        padding: 15,
+                        usePointStyle: true
+                    }
+                }
+            }
+        }
+    });
+
+    // Populate Department Stats
+    const deptStatsContainer = document.getElementById('deptStats');
+    deptLabels.forEach((label, index) => {
+        const count = deptData[index];
+        const percentage = Math.round((count / deptData.reduce((a, b) => a + b, 0)) * 100);
+        const stat = document.createElement('div');
+        stat.style.marginBottom = '0.75rem';
+        stat.innerHTML = `
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.25rem;">
+                <small style="color: #666; font-weight: 500;">${label}</small>
+                <small style="color: #2B3A8C; font-weight: 700;">${count}</small>
+            </div>
+            <div style="width: 100%; background: #eee; height: 6px; border-radius: 3px; overflow: hidden;">
+                <div style="background: ${chartColors[index]}; width: ${percentage}%; height: 100%;"></div>
+            </div>
+        `;
+        deptStatsContainer.appendChild(stat);
+    });
+
+    // Populate Year Level Stats
+    const yearStatsContainer = document.getElementById('yearStats');
+    yearLabels.forEach((label, index) => {
+        const count = yearData[index];
+        const percentage = Math.round((count / yearData.reduce((a, b) => a + b, 0)) * 100);
+        const stat = document.createElement('div');
+        stat.style.marginBottom = '0.75rem';
+        const colors = [primaryColor, successColor, infoColor, warningColor];
+        stat.innerHTML = `
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.25rem;">
+                <small style="color: #666; font-weight: 500;">${label}</small>
+                <small style="color: #2B3A8C; font-weight: 700;">${count}</small>
+            </div>
+            <div style="width: 100%; background: #eee; height: 6px; border-radius: 3px; overflow: hidden;">
+                <div style="background: ${colors[index]}; width: ${percentage}%; height: 100%;"></div>
+            </div>
+        `;
+        yearStatsContainer.appendChild(stat);
+    });
+</script>
+{% endblock %}

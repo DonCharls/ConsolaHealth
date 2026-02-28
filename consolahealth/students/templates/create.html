@@ -1,0 +1,150 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Create Student - ConsolaHealth{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-lg-8 offset-lg-2">
+            <!-- Header -->
+            <div class="mb-5">
+                <h1 class="display-5 mb-2" style="font-weight: 800; color: #2B3A8C;">
+                    <i class="bi bi-person-plus"></i> Register New Student
+                </h1>
+                <p class="text-muted">Enter the student details below to add them to the system</p>
+            </div>
+
+            <!-- Form Card -->
+            <div class="card border-0 shadow-custom">
+                <div class="card-header" style="border-radius: 16px 16px 0 0;">
+                    <h5 class="card-title mb-0">
+                        <i class="bi bi-clipboard-check"></i> Student Information
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <form action="{% url 'create_student' %}" method="post" novalidate>
+                        {% csrf_token %}
+                        
+                        <!-- Student ID Section -->
+                        <div class="mb-4">
+                            <label for="s_id" class="form-label">
+                                <i class="bi bi-hash"></i> Student ID
+                            </label>
+                            <input type="number" class="form-control" id="s_id" name="s_id" placeholder="e.g., 202401" required>
+                            <small class="text-muted">Unique student identification number</small>
+                        </div>
+
+                        <!-- Name Fields -->
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <label for="first_name" class="form-label">
+                                    <i class="bi bi-person"></i> First Name
+                                </label>
+                                <input type="text" class="form-control" id="first_name" name="first_name" placeholder="Juan" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="last_name" class="form-label">
+                                    <i class="bi bi-person"></i> Last Name
+                                </label>
+                                <input type="text" class="form-control" id="last_name" name="last_name" placeholder="Dela Cruz" required>
+                            </div>
+                        </div>
+
+                        <!-- Email Field -->
+                        <div class="mb-4">
+                            <label for="email" class="form-label">
+                                <i class="bi bi-envelope"></i> Email Address
+                            </label>
+                            <input type="email" class="form-control" id="email" name="email" placeholder="student@university.edu">
+                            <small class="text-muted">Optional contact email</small>
+                        </div>
+
+                        <!-- Department Field -->
+                        <div class="mb-4">
+                            <label for="department" class="form-label">
+                                <i class="bi bi-building"></i> Department
+                            </label>
+                            <select class="form-select" id="department" name="department" required>
+                                <option value="" disabled selected>Select a Department</option>
+                                <option value="BSIT">Bachelor of Science in Information Technology (BSIT)</option>
+                                <option value="BSED">Bachelor of Secondary Education (BSED)</option>
+                                <option value="BEED">Bachelor of Elementary Education (BEED)</option>
+                                <option value="BSHM">Bachelor of Science in Hospitality Management (BSHM)</option>
+                                <option value="BPEd">Bachelor of Physical Education (BPEd)</option>
+                                <option value="BSEntrep">Bachelor of Science in Entrepreneurship (BSEntrep)</option>
+                            </select>
+                        </div>
+
+                        <!-- Year Level Field -->
+                        <div class="mb-5">
+                            <label for="year_level" class="form-label">
+                                <i class="bi bi-mortarboard"></i> Year Level
+                            </label>
+                            <select class="form-select" id="year_level" name="year_level" required>
+                                <option value="" disabled selected>Select Year Level</option>
+                                <option value="1">1st Year</option>
+                                <option value="2">2nd Year</option>
+                                <option value="3">3rd Year</option>
+                                <option value="4">4th Year</option>
+                            </select>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="d-grid gap-3 d-sm-flex justify-content-sm-end">
+                            <a href="{% url 'home' %}" class="btn btn-secondary btn-lg">
+                                <i class="bi bi-x-circle"></i> Cancel
+                            </a>
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="bi bi-check-circle"></i> Save Student
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Quick Links -->
+            <div class="row mt-5">
+                <div class="col-12">
+                    <p class="text-center text-muted mb-3">Or navigate to:</p>
+                    <div class="text-center">
+                        <a href="{% url 'home' %}" class="btn btn-outline-primary me-2">
+                            <i class="bi bi-arrow-left"></i> Back to Students
+                        </a>
+                        <a href="{% url 'health:dashboard' %}" class="btn btn-outline-info">
+                            <i class="bi bi-graph-up"></i> Health Dashboard
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .form-control, .form-select {
+        border: 2px solid #E8E8E8;
+        border-radius: 8px;
+        padding: 12px 16px;
+        font-size: 0.95rem;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .form-control:focus, .form-select:focus {
+        border-color: #2B3A8C;
+        box-shadow: 0 0 0 0.2rem rgba(43, 58, 140, 0.15);
+        outline: none;
+    }
+
+    .form-label {
+        font-weight: 600;
+        color: #2C3E50;
+        margin-bottom: 8px;
+        font-size: 0.95rem;
+    }
+
+    .card {
+        margin-bottom: 30px;
+    }
+</style>
+{% endblock %}
